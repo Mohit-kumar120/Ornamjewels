@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ornamjewels - Premium Anti-Tarnish Jewelry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --gold: #D4A017; --gold-dark: #B8860B; --cream: #FDF2E9;
+            --shadow: 0 10px 40px rgba(212,160,23,0.2);
+            --success: #28a745; --danger: #dc3545; --google-blue: #4285F4;
+        }
+        body { 
+            font-family: 'Poppins', sans-serif; line-height: 1.6; 
+            color: #333; background: var(--cream);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: white; padding: 1rem 0; position: fixed; width: 100%;
+            top: 0; z-index: 1000; box-shadow: var(--shadow);
+        }
+        .nav-container {
+            max-width: 1200px; margin: 0 auto; display: flex;
+            justify-content: space-between; align-items: center; padding: 0 2rem;
+        }
+        .logo { 
+            font-size: 1.8rem; font-weight: 700; color: white; 
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .nav-icons { display: flex; gap: 1rem; align-items: center; }
+        .nav-btn, .user-profile {
+            background: rgba(255,255,255,0.2); border: 2px solid white;
+            color: white; padding: 0.6rem 1.2rem; border-radius: 25px;
+            cursor: pointer; transition: all 0.3s; font-weight: 500;
+            display: flex; align-items: center; gap: 0.3rem;
+        }
+        .nav-btn:hover, .user-profile:hover { 
+            background: white; color: var(--gold); transform: translateY(-2px);
+        }
+        .user-profile { background: rgba(255,255,255,0.3); }
+        .logout-btn { background: rgba(220,53,69,0.8); border-color: rgba(255,255,255,0.5); }
+        .logout-btn:hover { background: #dc3545; color: white; }
+        .whatsapp-buy {
+            background: #25D366 !important; border-color: #25D366 !important;
+            color: white; font-weight: 600; animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(37,211,102,0); }
+            100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+        }
+
+        main {padding: 120px 2rem 2rem; max-width: 1400px; margin: 0 auto;}
+        .hero {
+            background: white; padding: 4rem 2rem; border-radius: 20px;
+            text-align: center; margin-bottom: 3rem; box-shadow: var(--shadow);
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem); color: var(--gold);
+            margin-bottom: 1rem; font-weight: 700;
+        }
+        .hero p { font-size: 1.2rem; color: #666; margin-top: 1rem; }
+        .section-title {
+            text-align: center; font-size: 2.5rem; color: var(--gold-dark);
+            margin-bottom: 2rem; font-weight: 700;
+        }
+
+        .product-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; padding: 0 1rem;
+        }
+        .product-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            box-shadow: var(--shadow); transition: all 0.4s;
+        }
+        .product-card:hover {
+            transform: translateY(-15px); box-shadow: 0 25px 60px rgba(212,160,23,0.3);
+        }
+        .product-image {
+            height: 260px; position: relative; overflow: hidden;
+        }
+        .product-image img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .product-image .placeholder {
+            height: 100%; background: linear-gradient(135deg, #f8f4f0, #f0e8d8);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .product-image .placeholder i { font-size: 4.5rem; color: var(--gold); }
+        .anti-tarnish {
+            position: absolute; top: 15px; right: 15px;
+            background: linear-gradient(45deg, #28a745, #20c997); color: white;
+            padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+            z-index: 2;
+        }
+        .product-info { padding: 1.5rem; }
+        .product-code { color: var(--gold); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        .product-name { font-size: 1.2rem; font-weight: 600; margin: 0.8rem 0; line-height: 1.4; }
+        .price { font-size: 1.8rem; font-weight: 700; color: var(--gold); }
+        .stock { padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; margin: 0.8rem 0; }
+        .stock.in-stock { background: #d4edda; color: #155724; }
+        .stock.out-stock { background: #f8d7da; color: #721c24; }
+        .btn {
+            width: 100%; padding: 0.9rem; border: none; border-radius: 12px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 0.8rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+            font-size: 1rem;
+        }
+        .btn-buy { background: var(--gold); color: white; }
+        .btn-buy:hover { background: var(--gold-dark); transform: scale(1.05); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-row { display: flex; gap: 0.8rem; margin-top: 0.8rem; }
+        .btn-row .btn { flex: 1; }
+
+        .cart-icon { position: relative; }
+        .cart-count {
+            position: absolute; top: -8px; right: -8px; background: #dc3545;
+            color: white; border-radius: 50%; width: 20px; height: 20px;
+            font-size: 0.75rem; display: flex; align-items: center; justify-content: center;
+            font-weight: 600;
+        }
+
+        .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    display: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+        .modal-content {
+            background: white; border-radius: 20px; padding: 2.5rem;
+            max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.5); position: relative;
+        }
+        .close-btn {
+            position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem;
+            color: #999; cursor: pointer;
+        }
+        .close-btn:hover { color: var(--gold); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 1rem; border: 2px solid #eee; border-radius: 10px;
+            font-size: 1rem; transition: border-color 0.3s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; }
+        .divider { text-align: center; margin: 2rem 0; position: relative; color: #999; }
+        .divider::before {
+            content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #eee;
+        }
+        .divider span { background: white; padding: 0 1rem; }
+        .g_id_signin { display: none; }
+        .cart-item { padding: 1rem; border-bottom: 1px solid #eee; }
+        .order-summary { background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0; }
+        .quantity-controls { display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; }
+        .quantity-btn { background: var(--gold); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
+        .quantity-btn:hover { background: var(--gold-dark); }
+        .quantity-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .toast {
+            position: fixed; top: 120px; right: 20px; background: var(--success);
+            color: white; padding: 1rem 2rem; border-radius: 10px; z-index: 4000;
+            transform: translateX(400px); transition: all 0.3s;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { background: var(--danger); }
+
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 1rem; padding: 1rem; }
+            main { padding: 1rem; }
+            .product-grid { grid-template-columns: 1fr; }
+            .btn-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-gem"></i> Ornamjewels
+            </a>
+            <div class="nav-icons" id="navIcons">
+                <button class="nav-btn" onclick="openLogin()">
+                    <i class="fas fa-user"></i> Login
+                </button>
+                <button class="nav-btn cart-icon" onclick="openCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Premium Anti-Tarnish Jewelry</h1>
+            <p>Shines 2X longer • Hypoallergenic</p>
+        </section>
+
+        <section>
+            <h2 class="section-title">Our Collection</h2>
+            <div class="product-grid" id="productGrid"></div>
+        </section>
+    </main>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+            <h2 style="text-align: center; color: var(--gold); margin-bottom: 1.5rem;">
+                <i class="fas fa-user-lock"></i> Login to Ornamjewels
+            </h2>
+            <div id="g_id_onload"></div>
+            <div class="g_id_signin" data-type="standard" data-size="large" 
+                 data-theme="outline" data-text="sign_in_with" 
+                 data-shape="rectangular" data-logo_alignment="left"></div>
+            <div class="divider"><span>OR</span></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="loginPhone" placeholder="9876543210" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="loginName" placeholder="Enter your name" required>
+                </div>
+                <button type="submit" class="btn btn-buy" style="font-size: 1.1rem;">
+                    <i class="fas fa-sign-in-alt"></i> Continue with Phone
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CART & CHECKOUT MODAL -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeCartModal()">&times;</span>
+            <h2 style="text-align: center; color: var(--gold); margin-bottom: 1.5rem;">
+                <i class="fas fa-shopping-cart"></i> Your Cart & Checkout
+            </h2>
+            <div id="cartItems"></div>
+            <div class="order-summary">
+                <div style="display: flex; justify-content: space-between; font-weight: 600;">
+                    <span>Total Items:</span>
+                    <span id="cartItemCount">0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 1.5rem; color: var(--gold); margin-top: 0.5rem;">
+                    <span>Total Amount:</span>
+                    <span id="cartTotal">₹0</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Delivery Address</label>
+                <textarea id="deliveryAddress" rows="3" placeholder="Enter your complete delivery address" required></textarea>
+            </div>
+            <button class="btn btn-buy whatsapp-buy" style="width: 100%; font-size: 1.2rem;" onclick="completeCheckout()">
+                <i class="fab fa-whatsapp"></i> ✅ Complete Order on WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const WHATSAPP_NUMBER = '9878599416';
+        
+        // ✅ FIXED: Complete image mapping for ALL products - Using local images
+        const productImages = {
+            'PINKHARTNECKLESS': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/PINK%20HART%20NECKLESS.jpeg',
+            'ST-CARD-0157': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-CARD-0157.jpeg',
+            'ST-B-0903': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-B-0903.jpeg',
+            'ST-B-7570': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-B-7570.jpeg',
+            'ST-B-42838': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST_B-42838.jpeg',
+            'ST-E-0584': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-0584.jpeg',
+            'ST-E-038': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-038.jpeg',
+            'ST-E-047': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-047.jpeg',
+            'ST-E-056': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-056.jpeg',
+            'ST-E-065': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-065(White).jpeg',
+            'ST-E-072': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-072.jpeg',
+            'ST-E-082': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-082.jpeg',
+            'ST-E-091': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-091.jpeg',
+            'ST-E-0100': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-0100.jpeg',
+            'ST-E-0105': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-0105.jpeg',
+            'ST-E-0106': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-0106.jpeg',
+            'ST-E-0107': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-0107.jpeg',
+            'ST-E-0127': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-0127.jpeg',
+            'ST-E-728': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-728.jpeg',
+            'ST-E-5299': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-5299(WHITE).jpeg',
+            'ST-E-22112': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-22112.jpeg',
+            'ST-E-42628': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-42628.jpeg',
+            'ST-E-42726': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-42726.jpeg',
+            'ST-E-52919': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-52919.jpeg',
+            'ST-E-55544': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-55544.jpeg',
+            'ST-N-0201': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-N-0201.jpeg',
+            'ST-N-426': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-V-426.jpeg',
+            'ST-N-602': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-N-602.jpeg',
+            'ST-N-738': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-N-738.jpeg',
+            'ST-N-06797': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-N-06797.jpeg',
+            'ST-N-09080': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-N-09080.jpeg',
+            'ST-N-42628': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-N-42628.jpeg',
+            'ST-N-52007': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-N-52007.jpeg',
+            'ST-R-6282': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-R-6282.jpeg',
+            'ST-E-013': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-013.jpeg',
+            'ST-E-027': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-027.jpeg',
+            'ST-E-060': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-060.jpeg',
+            'ST-E-6282': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-6282.jpeg',
+            'ST-E-0405': 'https://raw.githubusercontent.com/Mohit-kumar120/Ornamjewels/3d517d3af1e5336be983f05de41ffed7f6668af9/pic/ST-E-0405.jpeg'
+        };
+
+        const products = [
+            {code: 'ST-E-038', name: 'Classic Pearl Drop Earrings', price: 170, qty: 11, icon: '💎'},
+            {code: 'ST-E-55544', name: 'Rose Gold Pearl Hoops', price: 160, qty: 3, icon: '🔗'},
+            {code: 'ST-E-013', name: 'Golden Heart Studs', price: 160, qty: 1, icon: '❤️'},
+            {code: 'ST-E-065', name: 'White Crystal Heart Drops', price: 160, qty: 1, icon: '✨'},
+            {code: 'ST-E-0107', name: 'Red Cherry Dangle Earrings', price: 170, qty: 1, icon: '🍒'},
+            {code: 'ST-E-42628', name: 'Black Square Statement Earrings', price: 170, qty: 1, icon: '⬜'},
+            {code: 'ST-E-0127', name: 'Floral Pearl Stud Earrings', price: 190, qty: 1, icon: '🌸'},
+            {code: 'ST-N-52007', name: 'Double Heart Pendant Necklace', price: 270, qty: 1, icon: '💕'},
+            {code: 'ST-B-7570', name: 'Floral Charm Bracelet', price: 230, qty: 1, icon: '🌺'},
+            {code: 'ST-E-5299', name: 'White Gold Huggie Hoops', price: 160, qty: 1, icon: '🔄'},
+            {code: 'ST-E-056', name: 'Elegant Pearl Chain Earrings', price: 170, qty: 1, icon: '💍'},
+            {code: 'ST-E-060', name: 'Blush Pearl Drop Earrings', price: 170, qty: 1, icon: '🌸'},
+            {code: 'ST-E-082', name: 'Golden Bow Earrings', price: 160, qty: 1, icon: '🎀'},
+            {code: 'ST-E-072', name: 'Flower Pearl Drop Earrings', price: 170, qty: 1, icon: '🌼'},
+            {code: 'ST-B-42838', name: 'Classic Gold Bangle', price: 230, qty: 1, icon: '📏'},
+            {code: 'ST-N-738', name: 'Infinity Charm Necklace', price: 170, qty: 1, icon: '∞'},
+            {code: 'ST-N-42628', name: 'Black Rectangle Pendant Necklace', price: 200, qty: 1, icon: '⬛'},
+            {code: 'ST-CARD-0157', name: 'Multi Stud Earring Set', price: 180, qty: 1, icon: '🎁'},
+            {code: 'ST-N-41725', name: 'Minimal Gold Chain Necklace', price: 170, qty: 1, icon: '⛓️'},
+            {code: 'ST-E-728', name: 'Chunky Gold Hoop Earrings', price: 180, qty: 1, icon: '⭕'},
+            {code: 'ST-E-0100', name: 'Mini Gold Oval Hoops', price: 150, qty: 1, icon: '🏀'},
+            {code: 'ST-E-091', name: 'Blue Stone Stud Earrings', price: 160, qty: 1, icon: '💙'},
+            {code: 'ST-B-0903', name: 'Leaf Design Statement Bangle', price: 210, qty: 1, icon: '🍃'},
+            {code: 'ST-E-0106', name: 'Purple Crystal Drop Earrings', price: 170, qty: 1, icon: '💜'},
+            {code: 'ST-E-027', name: 'Pearl Accent Studs', price: 150, qty: 1, icon: '⭐'},
+            {code: 'ST-N-0216', name: 'Delicate Gold Pendant Necklace', price: 190, qty: 1, icon: '💎'},
+            {code: 'ST-E-0702', name: 'Floral Pearl Stud Earrings', price: 190, qty: 1, icon: '🌺'},
+            {code: 'ST-E-6282', name: 'Classic Pearl Drop Hoops', price: 160, qty: 1, icon: '🔗'},
+            {code: 'ST-N-426', name: 'Simple Pearl Necklace', price: 150, qty: 12, icon: '📿'},
+            {code: 'ST-N-602', name: 'Black Beaded Statement Necklace', price: 180, qty: 5, icon: '⚫'},
+            {code: 'ST-E-42726', name: 'Sunburst Stud Earrings', price: 170, qty: 12, icon: '☀️'},
+            {code: 'ST-R-6282', name: 'Silver Snake Ring', price: 170, qty: 5, icon: '🐍'},
+            {code: 'ST-E-52919', name: 'Crystal Tassel Earrings', price: 180, qty: 12, icon: '✨'},
+            {code: 'PINKHARTNECKLESS', name: 'Pink Heart Pendant Necklace', price: 190, qty: 12, icon: '💖'},
+            {code: 'ST-E-0584', name: 'Silver Black Square Studs', price: 170, qty: 5, icon: '⬜'},
+            {code: 'ST-E-047', name: 'Red Heart Stud Earrings', price: 150, qty: 6, icon: '❤️'},
+            {code: 'ST-E-22112', name: 'Pearl Chain Dangle Earrings', price: 190, qty: 10, icon: '💎'},
+            {code: 'ST-E-0105', name: 'Minimal Teardrop Earrings', price: 160, qty: 5, icon: '💧'},
+            {code: 'ST-N-0201', name: 'Gold Heart Pendant Necklace', price: 250, qty: 5, icon: '💛'},
+            {code: 'ST-N-06797', name: 'Layered Gold Charm Necklace', price: 290, qty: 8, icon: '⛓️'},
+            {code: 'ST-N-09080', name: 'Star Charm Necklace', price: 210, qty: 1, icon: '⭐'}
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('ornamjewels_cart') || '[]');
+        let user = null;
+
+        // ✅ FIXED: Smart image getter with fallback
+        function getProductImage(code) {
+            return productImages[code] || null;
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountEls = document.querySelectorAll('.cart-count');
+            cartCountEls.forEach(el => el.textContent = count);
+        }
+
+        function addToCart(productCode) {
+            if (!user) {
+                showToast('⚠️ Please login first!');
+                openLogin();
+                return;
+            }
+            
+            const product = products.find(p => p.code === productCode);
+            if (!product || product.qty <= 0) {
+                showToast('❌ Product out of stock!', true);
+                return;
+            }
+
+            const existingItem = cart.find(item => item.code === productCode);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            localStorage.setItem('ornamjewels_cart', JSON.stringify(cart));
+            updateCartCount();
+            showToast('✅ Added to cart!');
+        }
+
+        function updateQuantity(productCode, change) {
+            const item = cart.find(item => item.code === productCode);
+            if (item) {
+                item.quantity = Math.max(1, item.quantity + change);
+                if (item.quantity === 0) {
+                    removeFromCart(productCode);
+                    return;
+                }
+                localStorage.setItem('ornamjewels_cart', JSON.stringify(cart));
+                renderCart();
+                updateCartCount();
+            }
+        }
+
+        function removeFromCart(productCode) {
+            cart = cart.filter(item => item.code !== productCode);
+            localStorage.setItem('ornamjewels_cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+            showToast('🗑️ Removed from cart');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            document.getElementById('cartItemCount').textContent = itemCount;
+            document.getElementById('cartTotal').textContent = `₹${total.toLocaleString()}`;
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Your cart is empty 😊</p>';
+                return;
+            }
+
+            container.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">${item.icon} ${item.name}</div>
+                            <div style="color: var(--gold);">₹${item.price}</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity('${item.code}', -1)" title="Decrease">-</button>
+                            <span style="min-width: 30px; text-align: center; font-weight: 600;">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity('${item.code}', 1)" title="Increase">+</button>
+                        </div>
+                        <div style="margin-left: 1rem; font-weight: 600; color: var(--gold);">₹${(item.price * item.quantity).toLocaleString()}</div>
+                    </div>
+                    <button onclick="removeFromCart('${item.code}')" style="background: var(--danger); color: white; border: none; border-radius: 5px; padding: 0.3rem 0.8rem; cursor: pointer; font-size: 0.8rem; width: 100%;">
+                        Remove Item
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateHeader() {
+            user = getUser();
+            const navIcons = document.getElementById('navIcons');
+            if (user && user.loggedIn) {
+                navIcons.innerHTML = `
+                    <div class="user-profile" onclick="showUserProfile()">
+                        <i class="fas fa-user"></i> Hi ${user.name}
+                    </div>
+                    <button class="nav-btn cart-icon" onclick="openCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="nav-btn logout-btn" onclick="logoutUser()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                `;
+            } else {
+                navIcons.innerHTML = `
+                    <button class="nav-btn" onclick="openLogin()">
+                        <i class="fas fa-user"></i> Login
+                    </button>
+                    <button class="nav-btn cart-icon" onclick="openCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                `;
+            }
+            updateCartCount();
+        }
+
+        function openCart() {
+            if (!user) {
+                showToast('⚠️ Please login to access cart!');
+                openLogin();
+                return;
+            }
+            renderCart();
+            document.getElementById('deliveryAddress').value = '';
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function completeCheckout() {
+            if (!user) {
+                showToast('⚠️ Please login first!', true);
+                openLogin();
+                return;
+            }
+
+            if (cart.length === 0) {
+                showToast('⚠️ Cart is empty!', true);
+                return;
+            }
+
+            const address = document.getElementById('deliveryAddress').value.trim();
+            if (!address) {
+                showToast('⚠️ Please enter delivery address!', true);
+                document.getElementById('deliveryAddress').focus();
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const itemsList = cart.map(item => 
+                `• ${item.icon} ${item.name} (x${item.quantity}) = ₹${(item.price * item.quantity).toLocaleString()}`
+            ).join('\\n');
+            
+            const orderId = 'OR' + Date.now().toString().slice(-6);
+            const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+            const message = `🛒 *COMPLETE ORDER #${orderId}* 🛒
+
+*Order Details:*
+${itemsList}
+
+💰 *TOTAL: ₹${total.toLocaleString()}*
+📦 Items: ${cart.length} | Quantity: ${cart.reduce((sum, item) => sum + item.quantity, 0)}
+
+*Customer Details:*
+👤 ${user.name}
+📱 ${user.phone || user.email}
+📍 *Delivery Address:*
+${address}
+
+⏰ Order Time: ${timestamp}
+
+*Please confirm availability & provide delivery timeline!*`;
+
+            window.open(`https://wa.me/91${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            
+            const orders = JSON.parse(localStorage.getItem('ornamjewels_orders') || '[]');
+            orders.unshift({
+                id: orderId,
+                items: [...cart],
+                total: total,
+                address: address,
+                customer: user.name,
+                phone: user.phone || user.email,
+                timestamp: timestamp
+            });
+            localStorage.setItem('ornamjewels_orders', JSON.stringify(orders.slice(0, 50)));
+            
+            cart = [];
+            localStorage.setItem('ornamjewels_cart', JSON.stringify(cart));
+            updateCartCount();
+            
+            showToast(`✅ Order #${orderId} sent to WhatsApp! Total: ₹${total.toLocaleString()}`);
+            closeCartModal();
+        }
+
+        // ✅ FIXED: Complete renderProducts with image fallback
+        function renderProducts() {
+            const container = document.getElementById('productGrid');
+            container.innerHTML = products.map(product => {
+                const inStock = product.qty > 0;
+                const imageUrl = getProductImage(product.code);
+                return `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <div class="anti-tarnish">ANTI-TARNISH</div>
+                            ${imageUrl ? 
+                                `<img src="${imageUrl}" alt="${product.name}" loading="lazy" 
+                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` :
+                                `<div class="placeholder" style="display: ${imageUrl ? 'none' : 'flex'};">
+                                    <i class="fas fa-gem">${product.icon}</i>
+                                </div>`
+                            }
+                        </div>
+                        <div class="product-info">
+                            <div class="product-code">${product.code}</div>
+                            <h3 class="product-name">${product.name}</h3>
+                            <div class="price">₹${product.price}</div>
+                            <div class="stock ${inStock ? 'in-stock' : 'out-stock'}">
+                                ${inStock ? `In Stock (${product.qty})` : 'Sold Out'}
+                            </div>
+                            ${inStock ? `
+                                <div class="btn-row">
+                                    <button class="btn btn-buy whatsapp-buy" onclick="whatsappBuy('${product.code}')">
+                                        <i class="fab fa-whatsapp"></i> WhatsApp Buy
+                                    </button>
+                                    <button class="btn btn-buy" onclick="addToCart('${product.code}')">
+                                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                                    </button>
+                                </div>
+                            ` : '<button class="btn" disabled>Sold Out</button>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function whatsappBuy(productCode) {
+            const product = products.find(p => p.code === productCode);
+            const message = `Hi! I want to buy:\n\n💎 ${product.name}\n💰 Price: ₹${product.price}\n📦 Qty: 1\n\nMy Details:\n${user ? `${user.name}\n${user.phone || user.email}` : 'Please add my details'}\n\nPlease confirm!`;
+            window.open(`https://wa.me/91${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            showToast('📱 WhatsApp opened!');
+        }
+
+        // User functions
+        function getUser() {
+            try {
+                return JSON.parse(localStorage.getItem('ornamjewels_user')) || null;
+            } catch (e) { return null; }
+        }
+
+        function saveUser(userData) {
+            localStorage.setItem('ornamjewels_user', JSON.stringify(userData));
+            user = userData;
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('ornamjewels_user');
+            user = null; 
+            updateHeader();
+            showToast('👋 Logged out!');
+        }
+
+        function openLogin() {
+            if (user && user.loggedIn) {
+                showToast('⚠️ Already logged in!');
+                return;
+            }
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('loginPhone').focus();
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Google login setup
+            if (typeof google !== 'undefined') {
+                google.accounts.id.initialize({
+                    client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+                    callback: handleGoogleSignIn,
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
+            }
+
+            document.getElementById('loginForm').onsubmit = function(e) {
+                e.preventDefault();
+                const phone = document.getElementById('loginPhone').value.replace(/\D/g, '');
+                const name = document.getElementById('loginName').value.trim();
+
+                if (!/^[6-9]\d{9}$/.test(phone)) {
+                    showToast('❌ Enter valid 10-digit phone', true);
+                    return;
+                }
+                if (!name) {
+                    showToast('❌ Enter your name', true);
+                    return;
+                }
+
+                saveUser({ phone, name, loggedIn: true, loginTime: new Date().toISOString(), loginMethod: 'phone' });
+                showToast(`✅ Welcome ${name}!`);
+                closeLoginModal();
+                updateHeader();
+            };
+
+            // Initialize
+            user = getUser();
+            renderProducts();
+            updateCartCount();
+            updateHeader();
+        });
+
+        function handleGoogleSignIn(response) {
+            try {
+                const data = JSON.parse(atob(response.credential.split('.')[1]));
+                const userData = {
+                    id: data.sub, name: data.name, email: data.email,
+                    picture: data.picture, phone: data.email.split('@')[0] + '0000000000',
+                    loggedIn: true, loginTime: new Date().toISOString(), loginMethod: 'google'
+                };
+                saveUser(userData);
+                showToast(`✅ Welcome ${userData.name}!`);
+                closeLoginModal();
+                updateHeader();
+            } catch (error) {
+                showToast('❌ Google login failed.', true);
+            }
+        }
+
+        function showUserProfile() {
+            if (!user) return;
+            const orders = JSON.parse(localStorage.getItem('ornamjewels_orders') || '[]');
+            alert(`👤 Profile\n\n👨‍💼 Name: ${user.name}\n📱 ${user.phone || user.email}\n📦 Total Orders: ${orders.length}\n\n💾 Orders saved locally!`);
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast ${isError ? 'error' : ''} show`;
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        window.onclick = function(e) {
+            if (e.target.id === 'loginModal') closeLoginModal();
+            if (e.target.id === 'cartModal') closeCartModal();
+        };
+    </script>
+</body>
+</html>
